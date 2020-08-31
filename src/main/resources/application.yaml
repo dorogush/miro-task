@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: 'miro-task'
+  profiles:
+    active: prod
+
+management:
+  endpoint.env.post.enabled: true
+  endpoints.web.exposure.include: info,health,env
+
+perPageDefault: 10
+perPageMax: 500
+
+rateLimit:
+  global:
+    enabled: true
+    rpm: 1000
+  create:
+    enabled: false
+    rpm: 1000
+  readOne:
+    enabled: false
+    rpm: 1000
+  readAll:
+    enabled: false
+    rpm: 1000
+  update:
+    enabled: false
+    rpm: 1000
+  delete:
+    enabled: false
+    rpm: 1000
