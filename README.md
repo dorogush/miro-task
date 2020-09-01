@@ -121,6 +121,7 @@ rateLimit.update.enabled | false | If update rate limit enabled.
 rateLimit.update.rpm | 1000 | Rate limit for update operations (requests per minute).
 rateLimit.delete.enabled | false | If delete rate limit enabled.
 rateLimit.delete.rpm | 1000 | Rate limit for delete operations (requests per minute).
+widgetRepositoryImplementation | collection | This options allows choosing between Repository implementations.<br/>`collection` - java concurrent collections<br/>`h2` - H2 in-memory db
 
 ## Dynamic properties
 Any property can be changed without application restart using Actuator endpoint. For example:

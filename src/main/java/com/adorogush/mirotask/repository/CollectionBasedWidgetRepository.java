@@ -38,7 +38,10 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -52,8 +55,10 @@ import org.springframework.stereotype.Repository;
  * #readsShiftLock} can be acquired.
  */
 @Repository
+@ConditionalOnProperty(name = "widgetRepositoryImplementation", havingValue = "collection")
 public class CollectionBasedWidgetRepository implements WidgetRepository {
 
+  private static final Logger log = LogManager.getLogger();
   private final Map<String, Widget> idToWidget;
   private final SortedMap<Integer, Widget> zToWidget;
   private final IdProvider idProvider;
@@ -80,6 +85,8 @@ public class CollectionBasedWidgetRepository implements WidgetRepository {
     final ReadWriteLock rwLock = new ReentrantReadWriteLock();
     writesShiftLock = rwLock.writeLock();
     readsShiftLock = rwLock.readLock();
+
+    log.info("Collection based WidgetRepository initialized.");
   }
 
   @Override

@@ -33,11 +33,9 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -49,13 +47,12 @@ import org.springframework.test.context.ActiveProfiles;
 /** Integration test. Starts the whole app and sends real rest requests. */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("dev")
-class WidgetsRestTest {
+abstract class AbstractWidgetsRestTest {
 
   private final TestRestTemplate testRestTemplate;
 
-  public WidgetsRestTest(
-      @LocalServerPort final int localPort,
-      @Autowired final RestTemplateBuilder restTemplateBuilder) {
+  public AbstractWidgetsRestTest(
+      final int localPort, final RestTemplateBuilder restTemplateBuilder) {
     testRestTemplate =
         new TestRestTemplate(
             restTemplateBuilder

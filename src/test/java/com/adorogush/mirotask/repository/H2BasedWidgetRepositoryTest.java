@@ -20,28 +20,30 @@ package com.adorogush.mirotask.repository;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
-import static org.mockito.Mockito.mock;
+import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
 
-import com.adorogush.mirotask.model.Widget;
 import com.adorogush.mirotask.service.IdProvider;
 import java.time.Clock;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentSkipListMap;
-import org.junit.jupiter.api.TestInstance;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.jdbc.JdbcTestUtils;
 
-/** Unit test covering {@link CollectionBasedWidgetRepository}. */
-@TestInstance(value = PER_CLASS)
-class CollectionBasedWidgetRepositoryTest extends AbstractWidgetRepositoryTest {
+/** Unit test covering {@link H2BasedWidgetRepository}. */
+@SpringBootTest
+@ActiveProfiles("dev")
+@TestPropertySource(properties = {"widgetRepositoryImplementation: h2"})
+class H2BasedWidgetRepositoryTest extends AbstractWidgetRepositoryTest {
 
-  private final IdProvider idProvider = mock(IdProvider.class);
-  private final Clock clock = mock(Clock.class);
-  private final Map<String, Widget> idToWidget = new ConcurrentHashMap<>();
-  private final SortedMap<Integer, Widget> zToWidget = new ConcurrentSkipListMap<>();
-  private final WidgetRepository repository =
-      new CollectionBasedWidgetRepository(idProvider, clock, idToWidget, zToWidget);
+  private static final String TABLE_NAME = "widget";
+
+  @MockBean private IdProvider idProvider;
+  @MockBean private Clock clock;
+  @Autowired private JdbcTemplate jdbcTemplate;
+  @Autowired private H2BasedWidgetRepository repository;
 
   @Override
   protected IdProvider idProviderMock() {
@@ -60,13 +62,11 @@ class CollectionBasedWidgetRepositoryTest extends AbstractWidgetRepositoryTest {
 
   @Override
   protected void assertTotalSize(final int size) {
-    assertThat(idToWidget.size(), equalTo(size));
-    assertThat(zToWidget.size(), equalTo(size));
+    assertThat(countRowsInTable(jdbcTemplate, TABLE_NAME), equalTo(size));
   }
 
   @Override
   protected void clearRepo() {
-    idToWidget.clear();
-    zToWidget.clear();
+    JdbcTestUtils.deleteFromTables(jdbcTemplate, TABLE_NAME);
   }
 }

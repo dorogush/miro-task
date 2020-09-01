@@ -30,3 +30,6 @@ rateLimit:
   delete:
     enabled: false
     rpm: 1000
+
+widgetRepositoryImplementation: collection
+#widgetRepositoryImplementation: h2

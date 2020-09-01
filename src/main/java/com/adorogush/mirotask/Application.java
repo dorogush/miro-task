@@ -23,11 +23,20 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import java.time.Clock;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
 /** Main entry point. */
-@SpringBootApplication
+@SpringBootApplication(
+    exclude = {
+      DataSourceAutoConfiguration.class,
+      DataSourceTransactionManagerAutoConfiguration.class
+    })
 public class Application {
   public static void main(String[] args) {
     SpringApplication.run(Application.class, args);
@@ -48,4 +57,9 @@ public class Application {
   public Clock clock() {
     return Clock.systemUTC();
   }
+
+  @Configuration
+  @ConditionalOnProperty(name = "widgetRepositoryImplementation", havingValue = "h2")
+  @Import({DataSourceAutoConfiguration.class, DataSourceTransactionManagerAutoConfiguration.class})
+  public static class H2BasedWidgetRepositoryConfiguration {}
 }
