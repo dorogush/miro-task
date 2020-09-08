@@ -1,5 +1,5 @@
 /*
-* Copyright 2020 Aleksandr Dorogush
+* Copyright $YEAR Aleksandr Dorogush
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -13,14 +13,3 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package com.adorogush.mirotask.service;
-
-import java.util.function.Supplier;
-
-/** Instances of this interface can generate new ids. */
-@FunctionalInterface
-public interface IdProvider extends Supplier<String> {
-
-  @Override
-  String get();
-}
